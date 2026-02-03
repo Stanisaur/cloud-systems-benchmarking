@@ -59,7 +59,8 @@ start_publishers() {
                 lon=-4.$((RAND_NUM %% 3000)) 
                 RAND_NUM=$(od -An -N2 -tu2 /dev/urandom)
                 journey_ref=$((RAND_NUM %% 50))
-                msg="[$journey_ref,$lat,$lon,%s]"
+                TIMESTAMP=$(date +%s%N)
+                msg="[$journey_ref,$lat,$lon,$TIMESTAMP,%s]"
                 echo "${msg}"
                 nats --server wss://%s:443 --timeout %s --creds /creds/client.creds pub %s "$msg" --tlsca /data/ca.crt
                 sleep 1
