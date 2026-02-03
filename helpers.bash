@@ -38,7 +38,6 @@ print_config() {
     echo "Batch Size:            $PUB_BATCH_SIZE"
     echo "Batch Interval:        ${PUB_BATCH_INTERVAL_SECONDS}s"
     echo "--- Subscribers -------------------------------------------------------------"
-    echo "Credentials:           $BUS_CREDS_FILE_PATH"
     echo "Container Limit:       $SUB_LIMIT"
     echo "Churn Rate (per sec):  Up to $SUB_BATCH_SIZE"
     echo "--- General -----------------------------------------------------------------"
@@ -125,18 +124,6 @@ validate_inputs() {
         show_help
         exit 1
     fi
-
-    # Check if Bus credentials exist
-    if [ -z "$BUS_CREDS_FILE_PATH" ] || [ ! -f "$BUS_CREDS_FILE_PATH" ]; then
-        log_error "Bus credentials file not found or not specified. Use --bus-creds <path>."
-    fi
-    BUS_CREDS_FILE_PATH=$(realpath "$BUS_CREDS_FILE_PATH")
-
-    # Check if Client credentials exist
-    if [ -z "$CLIENT_CREDS_FILE_PATH" ] || [ ! -f "$CLIENT_CREDS_FILE_PATH" ]; then
-        log_error "Client credentials file not found or not specified. Use --client-creds <path>."
-    fi
-    CLIENT_CREDS_FILE_PATH=$(realpath "$CLIENT_CREDS_FILE_PATH")
 
     CA_FILE_PATH=$(realpath "$CA_FILE_PATH")
     if [ ! -f "$CA_FILE_PATH" ]; then log_error "CA certificate file '$CA_FILE_PATH' not found." >&2; exit 1; fi

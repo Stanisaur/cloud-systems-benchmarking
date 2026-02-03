@@ -62,7 +62,7 @@ start_publishers() {
                 TIMESTAMP=$(date +%s%N)
                 msg="[$journey_ref,$lat,$lon,$TIMESTAMP,%s]"
                 echo "${msg}"
-                nats --server wss://%s:443 --timeout %s --creds /creds/client.creds pub %s "$msg" --tlsca /data/ca.crt
+                nats --server wss://%s:443 --timeout %s pub %s "$msg" --tlsca /data/ca.crt
                 sleep 1
             done
             ' \
@@ -76,7 +76,6 @@ start_publishers() {
                 --cap-add NET_ADMIN \
                 --add-host "$NATS_SERVER_HOSTNAME":"$LOADBALANCER_IP" \
                 -v "$CA_FILE_PATH":/data/ca.crt:ro \
-                -v "$BUS_CREDS_FILE_PATH:/creds/client.creds:ro" \
                 natsio/nats-box:latest \
                 sh -c "ip route add $TARGET_SUBNET via $gateway_ip_on_mobile_net; $publisher_loop")
 

@@ -9,7 +9,6 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Source all component scripts in order
 source "${SCRIPT_DIR}/config.bash"
-source "${SCRIPT_DIR}/refresh_creds.bash"
 source "${SCRIPT_DIR}/helpers.bash"
 source "${SCRIPT_DIR}/cleanup.bash"
 source "${SCRIPT_DIR}/setup.bash"
@@ -35,8 +34,6 @@ parse_args "$@"
 
 # 2. Validate inputs and environment
 validate_inputs
-
-renew_tokens &
 
 # 3. Print the configuration and wait a moment
 print_config

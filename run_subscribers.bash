@@ -20,7 +20,7 @@ start_subscribers() {
             local route_number; route_number=$(pick_bucket_configurable "$NUM_SUBJECTS" "$SPREAD")
 
             local sub_cmd="\
-            nats sub 'FG.FGLA.${route_number}' --timeout ${ALLOWED_TIMEOUT} --server wss://${NATS_SERVER_HOSTNAME}:443 --creds /creds/client.creds --tlsca /data/ca.crt \
+            nats sub 'FG.FGLA.${route_number}' --timeout ${ALLOWED_TIMEOUT} --server wss://${NATS_SERVER_HOSTNAME}:443 --tlsca /data/ca.crt \
              | awk -F',' '{print (systime()*1000000000 - \$4)}' >> /logs/latency.log"
             "
 
@@ -32,7 +32,6 @@ start_subscribers() {
                 --cap-add NET_ADMIN \
                 --add-host "$NATS_SERVER_HOSTNAME":"$LOADBALANCER_IP" \
                 -v "$CA_FILE_PATH":/data/ca.crt:ro \
-                -v "$CLIENT_CREDS_FILE_PATH:/creds/client.creds:ro" \
                 -v $(pwd)/bench_logs:/logs \
                 natsio/nats-box:latest \
                 sh -c "ip route add $TARGET_SUBNET via $gateway_ip_on_mobile_net; $sub_cmd")
