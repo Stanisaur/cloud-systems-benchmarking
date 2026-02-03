@@ -5,7 +5,7 @@ setup() {
     # 1. Create the backbone network
     docker network create nats_backbone --subnet 10.11.0.0/24 >/dev/null 2>&1 || true
 
-    docker run -it --rm --network nats_backbone --ip 10.11.0.2 nats:latest
+    docker run -it --rm --network nats_backbone --ip 10.11.0.2 -v "$(pwd)":/etc/nats -p 4222:4222 -p 443:443 nats:latest -c /etc/nats/server.conf
 
     log_info "2. Starting up $NUM_IPS SNAT gateway containers..."
     for (( i=1; i<=NUM_IPS; i++ ));
