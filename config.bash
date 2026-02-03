@@ -23,7 +23,7 @@ TARGET_SUBNET="" # Will be derived in helpers.sh
 
 # --- Static Configuration ---
 readonly SUBJECT_BASE="FG.FGLA."
-readonly NATS_SERVER_HOSTNAME="nats.dev.bus-infra-demo.com"
+readonly NATS_SERVER_HOSTNAME="10.11.0.2"
 readonly CLIENT_CREDS_LINK="https://bus-infra-demo.com/client.creds"
 readonly BUS_CREDS_LINK="https://bus-infra-demo.com/client.creds"
 readonly MOBILE_NETWORK_PREFIX="mobile_net"

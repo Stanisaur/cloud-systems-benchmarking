@@ -3,7 +3,9 @@ setup() {
     local GATEWAY_ID_FILE="$STATE_DIR/gateway_ids.txt"
 
     # 1. Create the backbone network
-    docker network create nats_backbone >/dev/null 2>&1 || true
+    docker network create nats_backbone --subnet 10.11.0.0/24 >/dev/null 2>&1 || true
+
+    docker run -it --rm --network nats_backbone --ip 10.11.0.2 nats:latest
 
     log_info "2. Starting up $NUM_IPS SNAT gateway containers..."
     for (( i=1; i<=NUM_IPS; i++ ));
@@ -37,6 +39,6 @@ setup() {
         # Apply download latency to the mobile interface (eth1)
         docker exec -d "$new_gateway_id" tc qdisc replace dev eth1 root netem delay ${D_LATENCY}ms ${D_JITTER}ms ${CORRELATION}% loss ${D_LOSS}% >/dev/null
     done
-    
+
     log_success "--- Setup Complete ---"
 }

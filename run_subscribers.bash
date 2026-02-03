@@ -21,7 +21,7 @@ start_subscribers() {
 
             local sub_cmd="\
             nats sub 'FG.FGLA.${route_number}' --timeout ${ALLOWED_TIMEOUT} --server wss://${NATS_SERVER_HOSTNAME}:443 --creds /creds/client.creds --tlsca /data/ca.crt \
-            sub_cmd="nats sub 'FG.FGLA.>' --raw | awk -F',' '{print (systime()*1000000000 - \$4)}' >> /logs/latency.log"
+             | awk -F',' '{print (systime()*1000000000 - \$4)}' >> /logs/latency.log"
             "
 
             local gateway_ip_on_mobile_net="10.10.${ip_bucket}.2"
