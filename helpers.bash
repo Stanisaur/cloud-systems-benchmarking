@@ -132,10 +132,6 @@ validate_inputs() {
         log_error "'$LOADBALANCER_IP' is not a valid IPv4 address." >&2; exit 1
     fi
 
-    if [ -z "$PARENT_INTERFACE" ] || ! ip link show "$PARENT_INTERFACE" &> /dev/null; then
-        log_error "Could not determine a valid parent interface. Please specify one with -i." >&2
-        exit 1
-    fi
-
-    TARGET_SUBNET=$(ip a show "$PARENT_INTERFACE" | awk '/inet / {print $2}' | sed 's/\.[0-9]\+\//\.0\//')
+    TARGET_SUBNET="10.11.0.0/24"
+    log_info "Using bridge mode. Target subnet set to $TARGET_SUBNET"
 }

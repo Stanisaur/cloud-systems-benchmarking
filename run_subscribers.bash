@@ -32,7 +32,7 @@ start_subscribers() {
                 --cap-add NET_ADMIN \
                 --add-host "$NATS_SERVER_HOSTNAME":"$LOADBALANCER_IP" \
                 -v "$CA_FILE_PATH":/data/ca.crt:ro \
-                -v $(pwd)/bench_logs:/logs \
+                -v "$(pwd)/bench_logs:/logs" \
                 natsio/nats-box:latest \
                 sh -c "ip route add $TARGET_SUBNET via $gateway_ip_on_mobile_net; $sub_cmd")
 
