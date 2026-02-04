@@ -114,10 +114,10 @@ parse_args() {
 validate_inputs() {
     check_deps
 
-    if [ "$EUID" -ne 0 ]; then
-        log_error "This script must be run with 'sudo' in order to do docker network creation." >&2
-        exit 1
-    fi
+    # if [ "$EUID" -ne 0 ]; then
+    #     log_error "This script must be run with 'sudo' in order to do docker network creation." >&2
+    #     exit 1
+    # fi
 
     if [ -z "$CA_FILE_PATH" ] || [ -z "$LOADBALANCER_IP" ]; then
         log_error "Missing required arguments: --ca and --lb-ip." >&2
