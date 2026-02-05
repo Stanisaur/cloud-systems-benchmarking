@@ -51,25 +51,10 @@ start_publishers() {
 
             local publisher_loop
             printf -v publisher_loop \
-                '
-                while true; do
-                    RAND_NUM=$(od -An -N2 -tu2 /dev/urandom)
-                    lat=55.$((RAND_NUM %% 9000))
-                    RAND_NUM=$(od -An -N2 -tu2 /dev/urandom)
-                    lon=-4.$((RAND_NUM %% 3000)) 
-                    RAND_NUM=$(od -An -N2 -tu2 /dev/urandom)
-                    journey_ref=$((RAND_NUM %% 50))
-                    
-                    # Pull from RAM and strip the dot to match your 19-digit integer format
-                    TIMESTAMP=$(awk '\''{gsub(/\./, ""); print $1}'\'' /dev/shm/global_clock)
-                    
-                    msg="$journey_ref,$lat,$lon,$TIMESTAMP,%s"
-                    echo "${msg}"
-                    nats --server wss://%s:443 --timeout %s pub %s "$msg" --tlsca /data/ca.crt
-                    sleep 1
-                done
-                ' \
-                "$subject" "$NATS_SERVER_HOSTNAME" "$ALLOWED_TIMEOUT" "$subject"
+                'nats pub --server wss://%s:443 --timeout %s --tlsca /data/ca.crt \
+                --count 1000000 --sleep 1s --templates \
+                "%s" "{{Random 2 2}},55.{{Random 4 4}},-4.{{Random 4 4}},{{UnixNano}},%s"' \
+                "$NATS_SERVER_HOSTNAME" "$ALLOWED_TIMEOUT" "$subject" "$subject"
 
             local gateway_ip_on_mobile_net="10.10.${ip_bucket}.2"
             local new_container_id
