@@ -30,12 +30,73 @@ IP.5 = ${USER_SPECIFIED_IP}
 EOF
 
     # 2. Generate the CA and Signed Server Cert
-    openssl genrsa -out "$CERT_DIR/rootCA.key" 2048 >/dev/null 2>&1
-    openssl req -x509 -new -nodes -key "$CERT_DIR/rootCA.key" -sha256 -days 365 \
-        -out "$CERT_DIR/rootCA.crt" -subj "/CN=NATS-Simulation-CA" >/dev/null 2>&1
+    cat > "$CERT_DIR/rootCA.key" <<EOF
+-----BEGIN RSA PRIVATE KEY-----
+MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDLuGBgO5fidsO4
+hJYHKdJqXhj13SKlk9rFjP70Iwf5HkCUJTi+829syUia8aR/EZAlGemYExm8MshK
+0meACT2QB1y/ve+Haiku3ihxZzwWl4HTjcosHII4lVFOEAbddpVfs7V9VhEvhwpu
+hAvsLt5QNLJr31y4kl7iuUehJYbe70gJE1qI/ES/eg5tswAcNetYSRrfhhoh16MZ
+eysvleFhT9r+3JS+K0w5hYejuLYYKrJTo1NLAHaPA6FKDeWP6t9e9ZIDVaSkKzXm
+4QkQ0m0Paj31ZBsc7UJsQS989m5ptIdKZkQtDoesOfp2a3aojQhnlmhbkv4oj6b1
+x8w5LDilAgMBAAECggEAITI5+Cx1z0gRlBV82g15VW5gbF38uZT6iwLy/6bes3w3
+wzw+fzUtZMF29JKoPrGGttj+XNLN+IIg67pV9cHrt3bPqQoDCGKm89VtKy+KldbZ
+57Z86Yu6t4wzW8BWUguzAw2GZzZZZhCABWq8g5/Oh6zSnyveUNA/KHxPHQX/sH9s
+VlR5NyGu0Sq4tr4dkoYn7wlmOO34S0VWNlt3xDdH3Rqt8K0sOC6S46dWgelG1QGq
+ZglPZlxzcfl/hZ76kNkrpnHub1saSgZ7cXEVvOYBPISU2o64FiD5Y83R8fSO7RBU
+PkxJntjjXTGNvACzZYltCwl6FB1krUopcxU4uO99qQKBgQDtjiErMk8q3oteH9tw
+cH/m1ft1gTVC/eiqKkX/vsXYJkxLR2XAFnQJ/QLHBBBZOGpN6UqtNQP4Wpu3HcUA
+rHgxvz5O+Gr9CXX4CCmKXAS0XdAw7bqJ1DGmCPVq13++OVoxiZU4f3nl1DWdM7a3
+7k9Ju51v7s2ispzvK9HcUmqVLQKBgQDbibYOh9/kdIyfjHdcc6pngfEVvvcUM9qD
+UABNlwjPqMFi6r4z9tVfGtfP7fwErN8h2+zfmhePy7X188V6BUveN8EqQs/QnGKv
+D27BI2c+v8Ls/pA4T4uc8c2FZv/NpzduR3obrpNBN8SgDnF4htBp81qWI31z/cy6
+n6obdElMWQKBgQC1j2CIbE4XnLl1+fE0kbcfjUJAP72ecwNlMyQG4B7EIhlDm9EH
+q+GKVMbPpqp8FmMhIwHBOfjL0yyaGvWbmzXOB7Wuk6zpslZoeIyPQ98Qn3bkPn3I
+o9ZCaSxxOT1X/OuTWu0inkNjRfqoKIMpNsmAuBUPHLwr8kmBfsNJme/+DQKBgCkO
+N92/yz8ODL5JpojDmLqCsnM+ozZD/DlSXLwl4p/zDzdQbwGIx55hhrp75wV4zsGm
+P0YRqxZZIk48qFGJbAbCpn0gwXxhwpK6cBvuYwB5HBr2AEKHnbRcA/NOr8fl3Zfi
+BhPnMeKga0UDbnT7wT4PJIGvYWavr/m2ojlAJfUBAoGBAJITIFx5qOOY33jnv9x3
+27Db3ttuof8+NXeMs5ShkgNzMQe2TAHeiQxeS4Qh/cjFLPlF8aV7+1+kfMKiGoKA
+iwrddmxUjfSs+FBN1GTZxiz5QAYVahlCb5O4gq92mCDSzcmReoDkWXZmj0T9jEcI
+SFs3S+Y1PDM5iP2TgG0iAXpF
+-----END RSA PRIVATE KEY-----
+EOF
 
-    openssl genrsa -out "$CERT_DIR/nats-server.key" 2048 >/dev/null 2>&1
-    openssl req -new -key "$CERT_DIR/nats-server.key" -out "$CERT_DIR/nats-server.csr" \
+    openssl req -x509 -new -nodes -key "$CERT_DIR/rootCA.key" -sha256 -days 365 \
+        -set_serial 1 -out "$CERT_DIR/rootCA.crt" \
+        -subj "/CN=NATS-Simulation-CA" >/dev/null 2>&1
+
+    cat > "$CERT_DIR/nats-server.key" <<EOF
+-----BEGIN RSA PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCbom5EsNnpfVwH
+UDxqFkYcf2iabZNJmpgn+qjASp+5cPP4he3q0sBKo/7FZl5Gh96RVNAcDaoXBXI/
+jVYCSqu9EhoUwvrxYQ0MYOSmfQRP88+UBqPjCiOuCG3aRP7uW1qB0Vb1z9Huvu23
+j88RYsBRl3xyxx7sCAH59NtpmmDC7VjYKNzC0mS3YivqogbQTYDAO1LBX8ZYSZB5
+Vf89HhmOcENlfL+RMiVPy3hW7EmCCiVESxx7cVtwwkdIqVyX7DtLG34uuvB9Wu5j
+xBiuySWNrECUGtbFE8hqHkjNWILyrhYXZHfe8D0ughXdCXZo9O5ZpZki1SfD+/Eq
+5GlEirE9AgMBAAECggEAI/pCn2J6nX07Pv2PWb7YalIRrlFSURuJvQQ26mzVy5qO
+646aV0Rs61RJ2vw1IvzZuKLwkOufvD6oEITtsw3r8YMzwETqmc4jpA7qDIqt6oWk
+IMYAMMXxRZPxQRneDN/VZlksTxrBnv1IGr0F0zEO4E2ymR3qygl32359EkZ7w9OZ
++03bm2+MIyG0j9+T85zhBA4vApNyYryoEBmZk93Jim9Apcc+1UwObtEsWZ0LkjVE
+oKsD8hJ2zgiKp6TXpjf+4aZq2ZSWTMmj0rgf6Jvb+fSNRfmirKsxmMM7GauDcHur
+CWMkcrw+1I7EBdC3NN3kolvS3x0Y4yU71Frk+w7ZyQKBgQDMwgSqHoVq5shb83Tw
+uzAgy9RuL/P5WdBG7RiqMIC8vnsuNIjwIyj84/Y6uSyeKldFkNC0+jbHaZuWSVos
+VYMhBk8q/t6xgXNFpjGlo86slhVsljeAntOX6Gng1AXxvaso78gZMQZA36WOrdSU
+edkBzRFGr4NirnXLWINaSwGlUwKBgQDClUhGoHZZPdSFJlF8oZ80v5fgzc5DpYG4
+/gAiXX9uC1KK4hNmC/JRGJoC7yNhI/pE8//ivPjdfZ1vzYmIAhH1o/pP4ALo85ef
+EafmGo/fPC9TbNtQ5+8tbpiplt3Aa1Xvmp0MbGgmrIPoIi7Q39lJt/+rUQSDe692
+iDhHWKNtLwKBgHuqmuKceHwuUsima/SROeo08WJzd+kcA50yyfjQPpDAgulPNX3D
+3peOn0KsYHROolMTudn0XW1nLV9BgkLQithBVUNkl9+hjZt9WvLt0n+OTfY9a9w1
+ERrodjoiFE0C/wNEfxgn8dzwtq9L8d6TESvzTQHiM3pAYEimdv7r2lydAoGADNvm
+sdwq1gzy/XWhzvWzWr4KoG2ZYvkOEJaglaTOJgyTgOAd3hGOCvPwQZ9iHCpPgL0L
+PQW2AJUrkVbo7tcMLsqOYTbxmkl2zKlTCi7ZMSx+CCpaeAdL1BnJ9vMkZnHxdOsn
+08laPKwL74xKwbz5VBjXyY+KF9JVrySja3udGTsCgYEAi9C6U6l3kHJPweWCjRNz
+aBbteu2wN6gZf3bj6HCsLsJnN4w9b6vx6JahhcLISi6cGWZjmvZeUJI50G6hh+Ok
+TOM36+qjwM9iAvo5nDN4JV9BjYhXPdO0TF/Xucy7uyzXxCup4nnhZUFKJKN0B4O8
+gfq8juFJUYpvhDwghfiZE/g=
+-----END RSA PRIVATE KEY-----
+EOF
+    openssl req -new -key "$CERT_DIR/nats-server.key" \
+        -set_serial 101 -out "$CERT_DIR/nats-server.csr" \
         -config "$CERT_DIR/san.cnf" >/dev/null 2>&1
 
     openssl x509 -req -in "$CERT_DIR/nats-server.csr" -CA "$CERT_DIR/rootCA.crt" \
@@ -96,6 +157,7 @@ setup() {
             --network "$server_network" \
             --user root --cap-add NET_ADMIN \
             --name "$gateway_name" \
+            --sysctl net.ipv4.ip_forward=1 \
             --hostname "$gateway_name" \
             nicolaka/netshoot /bin/sh -c "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE; \
             tc qdisc replace dev eth0 root netem delay ${U_LATENCY}ms ${U_JITTER}ms ${CORRELATION}% loss ${U_LOSS}%; sleep infinity")
