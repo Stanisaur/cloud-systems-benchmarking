@@ -99,7 +99,7 @@ parse_args() {
         key="$1"
         case $key in
             -a|--ca) CA_FILE_PATH="$2"; shift 2 ;;
-            -p|--lb-ip) LOADBALANCER_IP="$2"; NATS_SERVER_HOSTNAME="$2"; shift 2 ;;
+            -p|--lb-ip) LOADBALANCER_IP="$2"; shift 2 ;;
             --pub-limit) PUB_LIMIT="$2"; shift 2 ;;
             --pub-batch) PUB_BATCH_SIZE="$2"; shift 2 ;;
             --interval) PUB_BATCH_INTERVAL_SECONDS="$2"; shift 2 ;;

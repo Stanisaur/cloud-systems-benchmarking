@@ -22,6 +22,7 @@ CLIENT_CREDS_FILE_PATH=""
 CA_FILE_PATH=""
 LOADBALANCER_IP=""
 TARGET_SUBNET="" # Will be derived in helpers.sh
+NATS_SERVER_HOSTNAME="nats.local"
 
 # --- Static Configuration ---
 readonly SUBJECT_BASE="FG.FGLA."

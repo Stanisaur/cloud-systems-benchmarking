@@ -26,7 +26,6 @@ IP.1 = 127.0.0.1
 IP.2 = 172.17.0.1
 IP.3 = 10.11.0.1
 IP.4 = 10.11.0.2
-IP.5 = ${USER_SPECIFIED_IP}
 EOF
 
     # 2. Generate the CA and Signed Server Cert
@@ -103,7 +102,7 @@ EOF
         -CAkey "$CERT_DIR/rootCA.key" -CAcreateserial -out "$CERT_DIR/nats-server.crt" \
         -days 365 -sha256 -extensions v3_req -extfile "$CERT_DIR/san.cnf" >/dev/null 2>&1
     
-    log_success "Certificates updated with IP ${USER_SPECIFIED_IP} in $CERT_DIR"
+    log_success "Certificates updated in $CERT_DIR"
 }
 
 setup() {
@@ -115,18 +114,16 @@ setup() {
     log_info "Setting up backbone network for gateways"
     docker network create nats_backbone --subnet 10.11.0.0/24 >/dev/null 2>&1 || true
 
-    generate_certs "$NATS_SERVER_HOSTNAME" # need to do this before we set up the darned server
+    generate_certs "placeholder tbh" # need to do this before we set up the darned server
 
     if [ "$NO_SERVER" = true ]; then
         log_info "Skipping server setup (--noserver flag set)."
     else
         log_info "Setting up server"
-        NATS_SERVER_HOSTNAME="10.11.0.2"
         server_id=$(docker run --rm -d --network nats_backbone --ip 10.11.0.2 -v "$(pwd)":/etc/nats -p 443:443 nats:latest -c /etc/nats/server.conf)
 
         echo "$server_id" > "$STATE_DIR/server.txt"
     fi
-
 
     # 2. start the almighty global clock
     clock_id=$(docker run -d \
