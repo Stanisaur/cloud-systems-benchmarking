@@ -157,15 +157,19 @@ setup() {
             --sysctl net.ipv4.ip_forward=1 \
             --hostname "$gateway_name" \
             nicolaka/netshoot /bin/sh -c "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE; \
-            tc qdisc replace dev eth0 root netem delay ${U_LATENCY}ms ${U_JITTER}ms ${CORRELATION}% loss ${U_LOSS}%; sleep infinity")
-        
+            tc qdisc replace dev eth0 root netem \
+            delay ${U_LATENCY}ms ${U_JITTER}ms ${CORRELATION}% \
+            loss gemodel 2% 25% 50% 0.1%; sleep infinity")
+
         echo "$new_gateway_id" >> "$GATEWAY_ID_FILE"
 
         # Connect the gateway to the mobile network with a SPECIFIC IP
         docker network connect --ip "$gateway_ip_on_mobile" "$network_name" "$gateway_name"
-        
-        # Apply download latency to the mobile interface (eth1)
-        docker exec -d "$new_gateway_id" tc qdisc replace dev eth1 root netem delay ${D_LATENCY}ms ${D_JITTER}ms ${CORRELATION}% loss ${D_LOSS}% >/dev/null
+
+        # Apply download latency and bursty loss to the mobile interface (eth1)
+        docker exec -d "$new_gateway_id" tc qdisc replace dev eth1 root netem \
+            delay ${D_LATENCY}ms ${D_JITTER}ms ${CORRELATION}% \
+            loss gemodel 2% 25% 50% 0.1% >/dev/null
     done
 
     log_success "--- Setup Complete ---"
