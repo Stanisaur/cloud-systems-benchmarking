@@ -30,7 +30,7 @@ start_subscribers() {
                 bus_id = fields[6]
                 pub_ns = fields[4];
                 latency_ms = int((now_ns - pub_ns) / 1000000);
-                print bus_id, ip, latency_ms;
+                print bus_id, ip, latency_ms, now_ns;
                 fflush();
             }'
 
